@@ -1,0 +1,319 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Material Query Dashboard</title>
+<style>
+:root{--p:#1a5b8c;--ok:#2e7d32;--warn:#e65c00;--err:#d32f2f;--bg:#f0f2f5;--sh:0 2px 12px rgba(0,0,0,.08)}
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:-apple-system,"Segoe UI",Roboto,sans-serif;background:var(--bg);color:#333}
+.hd{background:linear-gradient(135deg,#1a5b8c,#2196F3);color:#fff;padding:16px 30px;display:flex;justify-content:space-between;align-items:center}
+.hd h1{font-size:20px;font-weight:600;display:flex;align-items:center;gap:8px}.badge{background:rgba(255,255,255,.2);padding:3px 10px;border-radius:10px;font-size:11px}
+.ct{max-width:1700px;margin:0 auto;padding:20px}
+.search,.ai,.dmt,.pmc,.rh{background:#fff;border-radius:10px;box-shadow:var(--sh)}
+.search{padding:20px 24px;margin-bottom:16px}.search h2{font-size:15px;color:var(--p);margin-bottom:14px;display:flex;align-items:center;gap:6px}
+.sr{display:flex;gap:14px;align-items:flex-end;flex-wrap:wrap}.sg{flex:1;min-width:200px}.sg label{display:block;font-size:12px;color:#666;margin-bottom:5px}.sg input,.sg select{width:100%;padding:9px 12px;border:1px solid #ddd;border-radius:6px;font-size:13px;background:#fff}
+.btn{background:var(--p);color:#fff;border:none;padding:9px 22px;border-radius:6px;font-size:13px;cursor:pointer;white-space:nowrap;display:flex;align-items:center;gap:5px}.btn:disabled{opacity:.6;cursor:not-allowed}
+.ld{display:none;text-align:center;padding:30px;color:#999}.ld.on{display:block}.sp{width:32px;height:32px;border:3px solid #eee;border-top-color:var(--p);border-radius:50%;animation:sp .7s linear infinite;margin:0 auto 10px}@keyframes sp{to{transform:rotate(360deg)}}
+.res{display:none}.res.on{display:block}
+.rh{padding:14px 24px;margin-bottom:14px;display:flex;justify-content:space-between;align-items:center}.rh .id{font-size:17px;font-weight:600;color:var(--p)}.rh .id .cty{font-size:13px;color:#888;font-weight:400;margin-right:6px}.rh .tm{font-size:12px;color:#999}
+.grid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:14px}@media(max-width:1100px){.grid{grid-template-columns:repeat(2,1fr)}}@media(max-width:600px){.grid{grid-template-columns:1fr}}
+.cd{background:#fff;border-radius:10px;padding:14px;box-shadow:var(--sh);border-left:4px solid var(--p)}.cd.ok{border-left-color:var(--ok)}.cd.wr{border-left-color:var(--warn)}.cd.er{border-left-color:var(--err)}.cd.in{border-left-color:#1976d2}.cd .tt{font-size:11px;color:#888;margin-bottom:5px}.cd .vl{font-size:15px;font-weight:700;color:#333}.cd .sb{font-size:10px;color:#999;margin-top:2px}
+.dmt{padding:18px;margin-bottom:14px;overflow-x:auto}.dmt h3{font-size:15px;color:var(--p);margin-bottom:12px;display:flex;align-items:center;gap:6px}
+.dmt-scroll{overflow-x:auto;white-space:nowrap}
+.dt{width:100%;border-collapse:collapse;font-size:12px;min-width:900px}.dt th{background:#f5f5f5;padding:7px 10px;text-align:left;font-weight:600;border-bottom:2px solid #ddd;color:#555;white-space:nowrap}.dt td{padding:6px 10px;border-bottom:1px solid #f0f0f0;white-space:nowrap}.dt tr:last-child td{border-bottom:none}
+.empty{text-align:center;padding:30px;color:#999}.empty .ic{font-size:36px;margin-bottom:8px;opacity:.5}
+.ai{padding:20px;margin-bottom:14px}.ai h3{font-size:15px;color:var(--p);margin-bottom:10px;display:flex;align-items:center;gap:6px}.ai .desc{font-size:12px;color:#888;margin-bottom:12px;padding:8px 12px;background:#f5f5f5;border-radius:6px}.sg2{display:flex;flex-direction:column;gap:8px}.si{display:flex;gap:10px;padding:10px;border-radius:8px;background:#fafafa}.si .ic{font-size:16px;flex-shrink:0}.si .tx{flex:1}.si .tx .m{font-size:13px;font-weight:500}.si .tx .d{font-size:11px;color:#888;margin-top:2px}.si .ow{font-size:10px;background:#e3f2fd;color:var(--p);padding:2px 6px;border-radius:4px;white-space:nowrap}.si.rec{border-left:3px solid var(--ok);background:#f0f7f0}
+.pmc{background:linear-gradient(135deg,#fff8e1,#fff3e0);padding:14px 20px;margin-bottom:14px;border:1px solid #ffe0b2}.pmc .tt{font-size:13px;font-weight:600;color:var(--warn);margin-bottom:4px}.pmc .dt2{font-size:12px;color:#555;line-height:1.6}
+.ft{text-align:center;padding:16px;color:#ccc;font-size:11px}
+
+/* 颜色标签 */
+.tag-dismantle{background:#ff6b35;color:#fff;padding:2px 8px;border-radius:4px;font-size:11px;margin-left:8px}
+.tag-repair{background:#9c27b0;color:#fff;padding:2px 8px;border-radius:4px;font-size:11px;margin-left:8px}
+.tag-alt{background:#2196f3;color:#fff;padding:2px 8px;border-radius:4px;font-size:11px;margin-left:8px}
+</style>
+</head>
+<body>
+<div class="hd"><h1>📦 Material Query Dashboard</h1><span class="badge">v5.9</span></div>
+<div class="ct">
+<div class="search"><h2>📦 Material Query / 物料查询</h2><div class="sr"><div class="sg"><label>Material Code / 料号</label><input id="mi" placeholder="Enter material code / 输入料号"></div><div class="sg" style="max-width:200px"><label>Country / 国家</label><select id="cs"><option value="">All / 全部</option><option value="TR">TR-Turkey</option><option value="RU">RU-EE1</option><option value="KZ">KZ-Kazakhstan</option><option value="UZ">UZ-Uzbekistan</option><option value="UA">UA-Ukraine</option><option value="CS">CS-Serbia</option><option value="CZ">CZ-Czech</option><option value="PL">PL-Poland</option><option value="ES">ES-Spain</option><option value="FR">FR-France</option><option value="HQ">HQ-CN</option></select></div><button class="btn" id="sbtn" onclick="go()">🔍 Query</button></div></div>
+<div class="ld" id="ld"><div class="sp"></div><div>Querying... / 查询中</div></div>
+<div class="res" id="res">
+<div class="rh"><div><div class="id"><span class="cty" id="rc"></span><span id="ri"></span></div><div style="font-size:12px;color:#888;margin-top:3px" id="rd"></div></div><div class="tm" id="rt"></div></div>
+<div class="ai"><h3>🤖 AI Recommendations / 智能建议</h3><div class="desc" id="aid"></div><div class="sg2" id="sj"></div></div>
+<div class="grid" id="mg"></div>
+<div class="dmt"><h3>1. Substitute Relations / 替代关系</h3><div id="altc"></div></div>
+<div class="dmt"><h3>2. Material & Inventory Details / 料号&库存明细</h3><div id="invc"></div></div>
+<div class="dmt"><h3>3. Alt. Material & Inventory Details / 替代料号&库存明细<span class="tag-alt">替代</span></h3><div id="altinvc"></div></div>
+<div class="dmt"><h3>4. BOM / Laptop BOM Details / BOM与笔电BOM明细</h3><div id="bomc"></div></div>
+<div class="dmt"><h3>5. Dismantling Solution / 拆机方案<span class="tag-dismantle">拆机</span></h3><div id="dismantledc"></div></div>
+<div class="dmt"><h3>6. MB Repair Solution / MB维修<span class="tag-repair">维修</span></h3><div id="mbrepairc"></div></div>
+<div class="dmt"><h3>7. Transit & Delivery Details / 待发&在途明细</h3><div class="dmt-scroll" id="trc"></div></div>
+<div class="dmt"><h3>8. HQ Inventory Details / HQ库存明细</h3><div id="hqc"></div></div>
+<div class="pmc"><div class="tt">📢 PMC Notification Status / PMC通知状态</div><div class="dt2" id="pd"></div></div>
+</div>
+<div class="ft">Material Query Dashboard v5.9 · Transsion Holdings</div>
+</div>
+
+<script>
+var SB_URL="https://upqcmqbdrntzgstkwntk.supabase.co";
+var SB_KEY="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InVwcWNtcWJkcm50emdzdGt3bnRrIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODEwOTM4NzAsImV4cCI6MjA5NjY2OTg3MH0.qR-m43foVbXNStcpkhQMXQzEjTAxia25VdONuEJNDZI";
+var SB_HEADERS={"apikey":SB_KEY,"Authorization":"***"+SB_KEY,"Content-Type":"application/json"};
+
+function sbQ(t,f,l,cols){
+  var selectCols=cols||"*";
+  var u=SB_URL+"/rest/v1/"+t+"?select="+selectCols+(f?"&"+f:"")+"&limit="+(l||500);
+  return fetch(u,{headers:SB_HEADERS}).then(function(r){
+    if(!r.ok)throw new Error(t+" HTTP "+r.status);
+    return r.json();
+  }).catch(function(e){console.error("Query failed:",t,e.message);return[];});
+}
+
+/* Query helpers — all values go through encodeURIComponent */
+function qEq(f,v){return f+"=eq."+encodeURIComponent(v);}
+function qIlike(f,v){return f+"=ilike."+encodeURIComponent("%"+v+"%");}
+/* For inside or() clauses: use dot notation */
+function qIlikeDot(f,v){return f+".ilike."+encodeURIComponent("%"+v+"%");}
+function qLikeDot(f,v){return f+".ilike."+encodeURIComponent(v+"%");}
+function qEqDot(f,v){return f+".eq."+encodeURIComponent(v);}
+function qOr(arr){var v=arr.filter(Boolean).join(",");return v?"or=("+v+")":"";}
+function qAnd(arr){return arr.filter(Boolean).join("&");}
+
+function sum(arr,field){return(arr||[]).reduce(function(s,x){return s+(parseFloat(x[field]||0)||0);},0);}
+function gv(o,keys){for(var i=0;i<keys.length;i++){if(o&&o[keys[i]]!=null&&o[keys[i]]!=="")return o[keys[i]];}return"—";}
+function uniq(arr){var s={},o=[];arr.forEach(function(x){if(!s[x]){s[x]=1;o.push(x);}});return o;}
+function isBad(x){var s=(String(x.status||"")+" "+String(x.material_grade||"")).toLowerCase();return/defect|damage/.test(s);}
+function countryFull(c){var m={RU:"RU-EE1",UA:"UA-Ukraine",TR:"TR-Turkey",KZ:"KZ-Kazakhstan",UZ:"UZ-Uzbekistan",CS:"CS-Serbia",CZ:"CZ-Czech",PL:"PL-Poland",ES:"ES-Spain",FR:"FR-France",HQ:"CN"};return m[c]||c||"";}
+function invTable(c){return c==="RU"?"country_inventory_ru":(c==="HQ"?"country_inventory_hq":"country_inventory");}
+function trTable(c){return c==="RU"?"plan_transit_ru":"plan_transit";}
+
+function go(){
+  var c=document.getElementById("cs").value;
+  var id=document.getElementById("mi").value.trim();
+  if(!id)return alert("Please enter a material code / 请输入料号");
+  document.getElementById("ld").classList.add("on");
+  document.getElementById("res").classList.remove("on");
+  document.getElementById("sbtn").disabled=true;
+  var t0=performance.now();
+  var isRu=c==="RU", isHq=c==="HQ";
+  var fullC=countryFull(c);
+  var iTbl=invTable(c), tTbl=trTable(c);
+  var needLaptop=id.indexOf("7")===0;
+
+  /* Build queries */
+  /* Use prefix pattern for material/main_material fields (format: "12114844-PCBA MB...") */
+  /* Must encode % as %25 for browser fetch */
+  var altMaterialQ="material.like."+encodeURIComponent(id+"%");
+  var altMainMaterialQ="main_material.like."+encodeURIComponent(id+"%");
+  var altQ=qAnd([qOr([altMaterialQ,altMainMaterialQ]),fullC?"country=eq."+fullC:""]);
+  var eolQ=qEq("code",id);
+  var invGoodQ=qAnd([qEq("assets_material_code",id),qEq("status","Good"),!isRu&&!isHq?qEq("country",c):""]);
+  var invAllQ=qAnd([qEq("assets_material_code",id),!isRu&&!isHq?qEq("country",c):""]);
+  var hqQ=qAnd([qEq("assets_material_code",id),qEq("status","Good")]);
+  var trQ=qOr([qEqDot("assets_material_code",id),qEqDot("shipment_material_code",id)]);
+  var bomQ=qEq("materialcode",id);
+  var lbQ=needLaptop?qEq("material_code",id):"";
+
+  /* Phase 1: parallel queries */
+  Promise.all([
+    sbQ("alternative_relationship",altQ,500),
+    sbQ(needLaptop?"eol_materials_laptop":"eol_materials",eolQ,200),
+    sbQ(iTbl,invGoodQ,5000),
+    sbQ(iTbl,invAllQ,5000),
+    sbQ("country_inventory_hq",hqQ,5000),
+    sbQ("bom",bomQ,5000,"model,parentmaterialcode,parentmaterialdesc,materialcode,materialdesc,materialgroup"),
+    needLaptop?sbQ("laptop_bom",lbQ,5000):Promise.resolve([]),
+    sbQ(tTbl,trQ,5000)
+  ]).then(function(R){
+    var altRows=R[0]||[], eolRows=R[1]||[], invGood=R[2]||[], invAll=R[3]||[], hqInv=R[4]||[], bomRows=R[5]||[], lbRows=R[6]||[], trRows=R[7]||[];
+
+    /* Extract alt material codes from alt relations */
+    var altCodes=[];
+    altRows.forEach(function(a){
+      var mat=String(a.material||"").split("-")[0].trim();
+      var main=String(a.main_material||"").split("-")[0].trim();
+      if(mat&&mat!==id)altCodes.push(mat);
+      if(main&&main!==id)altCodes.push(main);
+    });
+    altCodes=uniq(altCodes);
+
+    /* Phase 2: if alt codes exist, query their inventory + all-status + HQ + transit */
+    if(altCodes.length>0){
+      var altInvQ=qAnd([qOr(altCodes.map(function(x){return qEqDot("assets_material_code",x);})),qEq("status","Good"),!isRu&&!isHq?qEq("country",c):""]);
+      var altInvAllQ=qAnd([qOr(altCodes.map(function(x){return qEqDot("assets_material_code",x);})),!isRu&&!isHq?qEq("country",c):""]);
+      var altHqQ=qAnd([qOr(altCodes.map(function(x){return qEqDot("assets_material_code",x);})),qEq("status","Good")]);
+      var altTrQ=qOr([].concat(altCodes.map(function(x){return qEqDot("assets_material_code",x);}), altCodes.map(function(x){return qEqDot("shipment_material_code",x);})));
+      Promise.all([
+        sbQ(iTbl,altInvQ,5000),
+        sbQ(iTbl,altInvAllQ,5000),
+        sbQ("country_inventory_hq",altHqQ,5000),
+        sbQ(tTbl,altTrQ,5000)
+      ]).then(function(altR){
+        finish(id,c,{alt:altRows,eol:eolRows,invGood:invGood,invAll:invAll,altInv:altR[0]||[],altInvAll:altR[1]||[],hq:hqInv,altHq:altR[2]||[],bom:bomRows,lb:lbRows,tr:trRows,altTr:altR[3]||[],altCodes:altCodes,country:c,needLaptop:needLaptop,isHq:isHq},((performance.now()-t0)/1000).toFixed(2));
+      }).catch(function(){
+        finish(id,c,{alt:altRows,eol:eolRows,invGood:invGood,invAll:invAll,altInv:[],altInvAll:[],hq:hqInv,altHq:[],bom:bomRows,lb:lbRows,tr:trRows,altTr:[],altCodes:altCodes,country:c,needLaptop:needLaptop,isHq:isHq},((performance.now()-t0)/1000).toFixed(2));
+      });
+    }else{
+      finish(id,c,{alt:altRows,eol:eolRows,invGood:invGood,invAll:invAll,altInv:[],altInvAll:[],hq:hqInv,altHq:[],bom:bomRows,lb:lbRows,tr:trRows,altTr:[],altCodes:[],country:c,needLaptop:needLaptop,isHq:isHq},((performance.now()-t0)/1000).toFixed(2));
+    }
+  }).catch(function(e){
+    document.getElementById("ld").classList.remove("on");
+    document.getElementById("sbtn").disabled=false;
+    alert("Query failed: "+e.message);
+  });
+}
+
+function finish(id,country,r,el){
+  var countryInv=r.invGood||[];
+  var countryInvAll=r.invAll||[];
+  var altInv=r.altInv||[];
+  var altInvAll=r.altInvAll||[];
+  var hqInv=r.hq||[];
+  var altHqInv=r.altHq||[];
+  var altCodes=r.altCodes||[];
+
+  /* BOM processing */
+  var bomRows=(r.bom||[]).map(function(b){return{model:gv(b,["model"]),parent:gv(b,["parentmaterialcode"]),material:gv(b,["materialcode"]),desc:gv(b,["materialdesc"]),group:gv(b,["materialgroup"]),parentdesc:gv(b,["parentmaterialdesc"])};});
+  var lbRows=(r.lb||[]).map(function(b){return{model:gv(b,["model"]),parent:gv(b,["parent_code"]),material:gv(b,["material_code"]),desc:gv(b,["description"]),group:gv(b,["material_group"]),parentdesc:gv(b,["parent_description"])};});
+  var allBom=uniqBy(bomRows.concat(lbRows),function(x){return x.parent+"|"+x.material;});
+
+  var allCodes=[id].concat(altCodes);
+  var allInvAll=countryInvAll.concat(altInvAll);
+
+  var bomParents=uniq(allBom.filter(function(b){return allCodes.indexOf(String(b.material))>=0;}).map(function(x){return String(x.parent);}).filter(function(x){return x&&x!=="—";}));
+  var disRows=allInvAll.filter(function(x){return bomParents.indexOf(String(x.assets_material_code||""))>=0 && isBad(x);}).map(function(x){return{pc:gv(x,["assets_material_code"]),country:gv(x,["country"]),wh:gv(x,["warehouse_code"]),zone:gv(x,["zone"]),bin:gv(x,["bin"]),status:gv(x,["status"]),qty:gv(x,["quantity"]),desc:gv(x,["assets_material_desc"]),model:gv(x,["model"])};});
+
+  var mbRows=allInvAll.filter(function(x){return allCodes.indexOf(String(x.assets_material_code||""))>=0 && isBad(x);}).map(function(x){return{code:gv(x,["assets_material_code"]),country:gv(x,["country"]),wh:gv(x,["warehouse_code"]),zone:gv(x,["zone"]),bin:gv(x,["bin"]),status:gv(x,["status"]),qty:gv(x,["quantity"]),desc:gv(x,["assets_material_desc"]),model:gv(x,["model"]),group:gv(x,["material_group"])};});
+
+  var trRows=(r.tr||[]).concat(r.altTr||[]);
+  var allHqInv=hqInv.concat(altHqInv).filter(function(x){return allCodes.indexOf(String(x.assets_material_code||""))>=0;});
+
+  var countryTotal=sum(countryInv,'quantity');
+  var altInvTotal=sum(altInv,'quantity');
+  var hqTotal=sum(allHqInv,'quantity');
+  var toShip=sum(trRows,'to_be_shipped_qty');
+  var inTransit=sum(trRows,'in_transit_qty');
+  var altCnt=(r.alt||[]).length;
+  var eol=(r.eol||[]).length>0;
+
+  /* Summary cards */
+  document.getElementById("rc").textContent=(country||"All")+" / ";
+  document.getElementById("ri").textContent=id;
+  document.getElementById("rd").textContent="Query completed / 查询完成";
+  document.getElementById("rt").textContent="Time: "+el+"s";
+
+  document.getElementById("mg").innerHTML=[
+    {t:"Country Inventory / 国家库存",v:countryTotal.toLocaleString()+" pcs",s:countryInv.length+" records",c:countryInv.length?"ok":"wr"},
+    {t:"Alt. Inventory / 替代料库存",v:altInvTotal.toLocaleString()+" pcs",s:altInv.length+" records",c:altInv.length?"ok":"wr"},
+    {t:"EOL / 是否EOL无供应",v:eol?"Yes":"No",s:eol?"EOL matched":"Not EOL",c:eol?"er":"ok"},
+    {t:"Dismantling / 是否可拆机",v:disRows.length?"Yes":"No",s:disRows.length+" records",c:disRows.length?"ok":"wr"},
+    {t:"MB Repair / 是否可维修",v:mbRows.length?"Yes":"No",s:mbRows.length+" records",c:mbRows.length?"ok":"wr"},
+    {t:"To Be Shipped / 待发货",v:toShip.toLocaleString()+" pcs",s:trRows.length+" records",c:trRows.length?"in":"wr"},
+    {t:"In Transit / 在途",v:inTransit.toLocaleString()+" pcs",s:trRows.length+" records",c:trRows.length?"in":"wr"},
+    {t:"HQ Inventory / HQ库存",v:hqTotal.toLocaleString()+" pcs",s:allHqInv.length+" records",c:allHqInv.length?"ok":"wr"}
+  ].map(function(m){return '<div class="cd '+m.c+'"><div class="tt">'+m.t+'</div><div class="vl">'+m.v+'</div><div class="sb">'+m.s+'</div></div>';}).join("");
+
+  /* Module 1: Substitute Relations */
+  document.getElementById("altc").innerHTML=mkTable(r.alt,["Country","Material","Main Material","Replacement","Y/N Reciprocal","Scenario"],function(a){return[gv(a,["country"]),gv(a,["material"]),gv(a,["main_material"]),gv(a,["replacement"]),gv(a,["y_n_reciprocal"]),gv(a,["scenario"])];});
+
+  /* Module 2: Material & Inventory Details */
+  document.getElementById("invc").innerHTML=countryInv.length?mkTable(countryInv,["Country","Warehouse Code","Zone","Bin","Assets/Material Code","Assets/Material Desc","Model","Brand-Category","Material Group","Material Grade","Status","Quantity","Frozen","Available","Snapshot Date"],function(v){return[gv(v,["country"]),gv(v,["warehouse_code"]),gv(v,["zone"]),gv(v,["bin"]),gv(v,["assets_material_code"]),gv(v,["assets_material_desc"]),gv(v,["model"]),gv(v,["brand_category"]),gv(v,["material_group"]),gv(v,["material_grade"]),gv(v,["status"]),gv(v,["quantity"]),gv(v,["frozen"]),gv(v,["available"]),gv(v,["snapshot_date"])];}):'<div class="empty"><div class="ic">📦</div><div>No country inventory data / 无国家库存数据</div></div>';
+
+  /* Module 3: Alt. Material & Inventory Details — only when alt relations exist */
+  if((r.alt||[]).length>0){
+    document.getElementById("altinvc").innerHTML=altInv.length?mkTable(altInv,["Country","Warehouse Code","Zone","Bin","Assets/Material Code","Assets/Material Desc","Model","Brand-Category","Material Group","Material Grade","Status","Quantity","Frozen","Available","Snapshot Date"],function(v){return[gv(v,["country"]),gv(v,["warehouse_code"]),gv(v,["zone"]),gv(v,["bin"]),gv(v,["assets_material_code"]),gv(v,["assets_material_desc"]),gv(v,["model"]),gv(v,["brand_category"]),gv(v,["material_group"]),gv(v,["material_grade"]),gv(v,["status"]),gv(v,["quantity"]),gv(v,["frozen"]),gv(v,["available"]),gv(v,["snapshot_date"])];}):'<div class="empty"><div class="ic">🔵</div><div>Substitute relations found, but no alt. inventory matched / 已命中替代关系，但无替代料良品库存</div></div>';
+  }else{
+    document.getElementById("altinvc").innerHTML='<div class="empty"><div class="ic">🔵</div><div>No substitute relations found / 无替代关系</div></div>';
+  }
+
+  /* Module 4: BOM / Laptop BOM */
+  document.getElementById("bomc").innerHTML=allBom.length?mkTable(allBom,["Model","Parent Code","Material Code","Description","Material Group","Parent Description"],function(b){return[b.model,b.parent,b.material,b.desc,b.group,b.parentdesc];}):'<div class="empty"><div class="ic">🔧</div><div>No BOM'+(r.needLaptop?" / Laptop BOM":"")+' data / 无BOM数据</div></div>';
+
+  /* Module 5: Dismantling Solution */
+  if(disRows.length>0){
+    document.getElementById("dismantledc").innerHTML=mkTable(disRows,["Parent Code","Country","Warehouse Code","Zone","Bin","Status","Qty","Description","Model"],function(x){return[x.pc,x.country,x.wh,x.zone,x.bin,x.status,x.qty,x.desc,x.model];});
+  }else if(bomParents.length>0){
+    document.getElementById("dismantledc").innerHTML='<div class="empty"><div class="ic">🔶</div><div>No dismantling solution available / 无拆机方案（父料号无不良库存）</div></div>';
+  }else{
+    document.getElementById("dismantledc").innerHTML='<div class="empty"><div class="ic">🔶</div><div>No BOM data / 无BOM数据</div></div>';
+  }
+
+  /* Module 6: MB Repair */
+  document.getElementById("mbrepairc").innerHTML=mbRows.length?mkTable(mbRows,["Material Code","Country","Warehouse Code","Zone","Bin","Status","Qty","Description","Model","Material Group"],function(x){return[x.code,x.country,x.wh,x.zone,x.bin,x.status,x.qty,x.desc,x.model,x.group||"—"]; }):'<div class="empty"><div class="ic">🛠️</div><div>No MB repair inventory found / 无维修库存</div></div>';
+
+  /* Module 7: Transit & Delivery */
+  document.getElementById("trc").innerHTML=trRows.length?mkTable(trRows,["Country Code","Assets/Material Code","Model","Assets/Material Desc","Material Group","Order Status","First Order","Shipment Material Code","Shipment Desc","Shipment Model","Order QTY","Shortage QTY","To be shipped QTY","In Transit QTY","Source NO.","Related Order","Delivery No.","Stock In No.","Logistics No."],function(t){return[gv(t,["country_code"]),gv(t,["assets_material_code"]),gv(t,["model"]),gv(t,["assets_material_desc"]),gv(t,["material_group"]),gv(t,["order_material_status"]),gv(t,["first_order"]),gv(t,["shipment_material_code"]),gv(t,["shipment_material_decs"]),gv(t,["shipment_model"]),gv(t,["order_qty"]),gv(t,["shortage_qty"]),gv(t,["to_be_shipped_qty"]),gv(t,["in_transit_qty"]),gv(t,["source_no"]),gv(t,["downstream_related_order"]),gv(t,["delivery_no"]),gv(t,["stock_in_no"]),gv(t,["logistics_no"])];}):'<div class="empty"><div class="ic">🚚</div><div>No transit records / 无待发在途数据</div></div>';
+
+  /* Module 8: HQ Inventory */
+  document.getElementById("hqc").innerHTML=hqInv.length?mkTable(hqInv,["Country","Warehouse Code","Zone","Bin","Assets/Material Code","Assets/Material Desc","Model","Brand-Category","Material Group","Material Grade","Status","Quantity","Frozen","Available","Snapshot Date"],function(v){return[gv(v,["country"]),gv(v,["warehouse_code"]),gv(v,["zone"]),gv(v,["bin"]),gv(v,["assets_material_code"]),gv(v,["assets_material_desc"]),gv(v,["model"]),gv(v,["brand_category"]),gv(v,["material_group"]),gv(v,["material_grade"]),gv(v,["status"]),gv(v,["quantity"]),gv(v,["frozen"]),gv(v,["available"]),gv(v,["snapshot_date"])];})+'<div style="margin-top:10px;font-size:12px;color:#888">Total: <b>'+hqTotal.toLocaleString()+' pcs</b></div>':'<div class="empty"><div class="ic">🏢</div><div>No HQ inventory / 无HQ库存</div></div>';
+
+  /* AI Decision */
+  var decision=buildDecision({countryInv:countryInv,altInv:altInv,disRows:disRows,mbRows:mbRows,trRows:trRows,hqInv:hqInv,altRows:r.alt||[]});
+  document.getElementById("aid").textContent=decision.title;
+  document.getElementById("sj").innerHTML=decision.steps.map(function(s){return '<div class="si'+(s.rec?" rec":"")+'"><div class="ic">'+s.icon+'</div><div class="tx"><div class="m">'+s.text+'</div><div class="d">'+s.desc+'</div></div><div class="ow">'+s.owner+'</div></div>';}).join("");
+  document.getElementById("pd").innerHTML=decision.notice;
+
+  document.getElementById("ld").classList.remove("on");
+  document.getElementById("res").classList.add("on");
+  document.getElementById("sbtn").disabled=false;
+}
+
+function buildDecision(ctx){
+  var hasCI=ctx.countryInv.length>0, hasAI=ctx.altInv.length>0, hasDis=ctx.disRows.length>0, hasMb=ctx.mbRows.length>0, hasTr=ctx.trRows.length>0, hasHq=ctx.hqInv.length>0, hasAlt=ctx.altRows.length>0;
+  var steps=[], title="Actionable Supply Recommendation / 可执行供应建议";
+
+  if(hasCI){
+    steps.push({icon:"📦",text:"Use country inventory first / 优先使用国家库存",desc:"Country inventory found / 已找到国家库存",owner:"Planner",rec:true});
+    title="Priority: Country Inventory / 优先：国家库存";
+  }else if(hasDis){
+    steps.push({icon:"🔨",text:"Recommend dismantling / 推荐拆机供应",desc:"Defect/damage parent inventory exists / 存在父料号不良库存",owner:"Dismantle",rec:true});
+    title="Priority: Dismantling / 优先：拆机";
+  }else if(hasMb){
+    steps.push({icon:"🛠️",text:"Recommend MB repair / 推荐维修",desc:"BOM group 121 with defect/damage inventory / 121物料组存在不良库存",owner:"Service",rec:true});
+    title="Priority: MB Repair / 优先：维修";
+  }else if(hasTr){
+    steps.push({icon:"🚚",text:"Confirm ETA with PMC / 与PMC确认到料时间",desc:"Matching transit records exist / 存在匹配在途记录",owner:"PMC",rec:true});
+    title="Priority: Transit / 优先：等待在途";
+  }else if(hasHq){
+    steps.push({icon:"🏢",text:"Pls Notify PMC @Lucia Wang for replenishment / 请通知PMC@王露萱补单",desc:"HQ inventory exists / 存在HQ库存",owner:"PMC",rec:true});
+    title="Priority: HQ replenishment / 优先：HQ补单";
+  }else{
+    steps.push({icon:"⚠️",text:"Recommend local buy or transfer / 推荐本采或调拨",desc:"No inventory / no transit / no alt / no dismantle / no repair / 无库存无在途无替代无拆机无维修",owner:"PMC",rec:true});
+    steps.push({icon:"📣",text:"Notify PMC @Lucia Wang / 同步通知PMC@王露萱",desc:"Escalate immediately / 立即升级处理",owner:"System"});
+    title="Priority: Buy/Transfer / 优先：本采或调拨";
+  }
+
+  if(hasAlt&&hasTr) steps.unshift({icon:"ℹ️",text:"Alternative supply & in transit both exist / 替代与在途并存",desc:"Prefer alt. inventory, keep transit as backup / 优先替代库存，在途作备份",owner:"System"});
+
+  return {title:title,steps:steps,notice:buildNotice(ctx)};
+}
+
+function buildNotice(ctx){
+  var hasAlt=ctx.altRows&&ctx.altRows.length>0;
+  var hasDis=ctx.disRows&&ctx.disRows.length>0;
+  var hasMb=ctx.mbRows&&ctx.mbRows.length>0;
+  var hasTr=ctx.trRows&&ctx.trRows.length>0;
+  var hasHq=ctx.hqInv&&ctx.hqInv.length>0;
+  var isGroup121=ctx.countryInv.some(function(x){return String(x.material_group||"").trim()==="121";})||ctx.mbRows.length>0;
+
+  if(hasDis) return "Dismantling solution exists. / 已命中拆机方案。";
+  if(hasMb) return "MB repair stock exists. / 已命中维修库存。";
+  if(hasTr) return "To-be-shipped or in transit records exist. / 存在待发或在途记录。";
+  if(hasHq) return "HQ inventory exists. / 存在HQ库存。";
+  if(hasAlt) return "Alternative relationships exists. Prefer country inventory first. / 已命中替代关系，优先使用国家库存。";
+  return "No substitute, no inventory, no transit, no dismantle, no repair. / 无替代、无库存、无在途、无拆机、无维修。";
+}
+
+function uniqBy(arr,keyFn){var seen={},out=[];arr.forEach(function(x){var k=keyFn(x);if(!seen[k]){seen[k]=1;out.push(x);}});return out;}
+
+function mkTable(rows,headers,mapRow){
+  if(!rows||!rows.length)return '<div class="empty"><div class="ic">·</div><div>No data / 无数据</div></div>';
+  return '<table class="dt"><tr>'+headers.map(function(h){return '<th>'+h+'</th>';}).join('')+'</tr>'+rows.slice(0,100).map(function(r){return '<tr>'+mapRow(r).map(function(v){return '<td>'+v+'</td>';}).join('')+'</tr>';}).join('')+'</table>';
+}
+
+document.getElementById("mi").addEventListener("keypress",function(e){if(e.key==="Enter")go();});
+</script>
+
+</body>
+</html>
